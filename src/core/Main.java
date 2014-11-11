@@ -1,10 +1,13 @@
 package core;
 
-public class Main {
+import infoobject.WikiArticle;
 
-    public static void main(String[] args) {
-	    new Core("Random-access memory");
-        new Core("Random-access");
+/**
+ * Created by Lars on 11.11.2014.
+ */
+public class Main {
+    public static void main(String args[]) {
+        Log.setOutput(true);
+        Core.getCore().addInfoObjectToScheduleList(new WikiArticle("Computer network"));
     }
 }
-
