@@ -3,11 +3,16 @@ package core;
 import infoobject.WikiArticle;
 
 /**
- * Created by Lars on 11.11.2014.
+ * Can start the program
  */
 public class Main {
+    /**
+     * Starts the program
+     *
+     * @param args no args used!
+     */
     public static void main(String args[]) {
-        Log.setOutput(true);
+        //adds an start InfoObject to the Core. This article will fill up the working queue.
         Core.getCore().addInfoObjectToScheduleList(new WikiArticle("Computer network"));
     }
 }

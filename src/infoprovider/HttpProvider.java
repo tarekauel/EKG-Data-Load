@@ -1,7 +1,5 @@
 package infoprovider;
 
-import core.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,9 +7,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by Lars on 11.11.2014.
+ * This Provider can connect to an http resource like wikipedia.org
  */
 public class HttpProvider extends InfoProvider {
+    /**
+     * will set an baseUri as rootpath to the api or Whatever.
+     * This should only help you to focus on creating the queries, and not everytime carrying around the baseuri.
+     *
+     * @param baseUri
+     */
     public HttpProvider(String baseUri) {
         super(baseUri);
     }
@@ -27,7 +31,6 @@ public class HttpProvider extends InfoProvider {
     @Override
     public String requestResource(String query) {
         String sQuery = query.replace(" ", "%20");
-        Log.log("Sending HTTP Query:" + sQuery);
         try {
 
             HttpURLConnection conn = (HttpURLConnection) new URL(baseUri + sQuery).openConnection();

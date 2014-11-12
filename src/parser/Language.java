@@ -1,19 +1,11 @@
 package parser;
 
 /**
- * Created by Lars on 11.11.2014.
+ * This enumeration is supposed to be used by setLanguage on a WikiArticle to prevent damage on not known languages.
  */
 public enum Language {
-    DE("Deutsch", "DE"),
-    EN("Englisch", "EN"),
-    FR("Franzoesisch", "FR");
+    EN,
+    DE
 
-    private final String shortLang;
-    private final String longLang;
-
-    Language(String longLang, String shortLang) {
-        this.longLang = longLang;
-        this.shortLang = shortLang;
-    }
 
 }
