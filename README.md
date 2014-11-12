@@ -4,4 +4,5 @@ EKG-Data-Load
 - [ ] Tests
 - [ ] Klassendiagramm anpassen
 - [ ] Loop Back implementieren
-- [ ] Kommentare
+- [X] Kommentare
+- [ ] Logging
