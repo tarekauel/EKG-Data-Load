@@ -2,5 +2,6 @@ EKG-Data-Load
 =============
 ###TODO List###
 - [ ] Tests
-- [ ] Anpassen an Klassendiagramm
-- [ ] Weitere Funktionalität implementieren
+- [ ] Klassendiagramm anpassen
+- [ ] Loop Back implementieren
+- [ ] Kommentare
