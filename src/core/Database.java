@@ -3,6 +3,7 @@ package core;
 import infoobject.WikiArticle;
 
 import java.sql.*;
+import java.util.logging.Logger;
 
 /**
  * This class will manage the connection to the used sqlite db
@@ -10,11 +11,13 @@ import java.sql.*;
 public class Database {
     private static final Database singletonInstance = new Database();
     Connection c = null;
+    private Logger log = Logger.getGlobal();
 
     /**
      * initialises the Database to get access to it.
      */
     private Database() {
+
         try {
             //Load the classes
             Class.forName("org.sqlite.JDBC");
@@ -26,9 +29,10 @@ public class Database {
             stat.executeUpdate("CREATE TABLE ARTICLES (TITLE, PARSED);");
 
         } catch (Exception e) {
-            System.out.println("DB-Connection failed!");
+            log.severe("Database failed to create without errors.");
             System.exit(-1);
         }
+        log.fine("Database successfully createds");
     }
 
     /**
@@ -47,12 +51,14 @@ public class Database {
      * @param article
      */
     public synchronized void insertArticleIntoDatabase(WikiArticle article) {
+        log.finer("Adding article [" + article.toString() + "] to database.");
         try {
             //Check if already in list
             PreparedStatement prep = c.prepareStatement("SELECT * FROM ARTICLES WHERE TITLE = ?;");
             prep.setString(1, article.getTitle());
             ResultSet rs = prep.executeQuery();
             if (rs.next()) {
+                log.info("Article [" + article.toString() + "] was already in database.");
                 return;
             }
 
@@ -61,9 +67,9 @@ public class Database {
                     "INSERT INTO ARTICLES values (?, 0);");
             prep.setString(1, article.getTitle());
             prep.executeUpdate();
+            log.finer("Article [" + article.toString() + "] successful added to database.");
         } catch (SQLException e) {
-            System.out.println("DB failed!(insert)");
-            System.exit(-1);
+            log.severe("Could not insert article [\" + article.toString() + \"] into database.");
         }
     }
 
@@ -73,6 +79,7 @@ public class Database {
      * @return
      */
     public synchronized WikiArticle getNextArticle() {
+        log.finer("Requesting next article from Database.");
         WikiArticle a = null;
         try {
             Statement st = c.createStatement();
@@ -80,14 +87,12 @@ public class Database {
 
             if (rs.next()) {
                 a = new WikiArticle(rs.getString("TITLE"));
+                log.finest("Next article is [" + a.getTitle() + "].");
                 st.executeUpdate("UPDATE ARTICLES SET PARSED = 1 WHERE TITLE = '" + a.getTitle() + "';");
+                log.finer("Updated article [\" + a.getTitle() + \"].");
             }
-
-
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("DB failed!(get)");
-            System.exit(-1);
+            log.severe("Could not get next article from database.");
         }
         return a;
     }

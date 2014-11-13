@@ -23,6 +23,7 @@ public class WikiParser extends Parser {
 
     @Override
     public void analyse(InfoObject objectToAnalyse) {
+        log.finest(this.toString() + ": analysing [" + objectToAnalyse.toString() + "]");
         // Parse the InfoObject to an WikiArticle to make it possible to parse it correct.
         WikiArticle currentArticle = (WikiArticle) objectToAnalyse;
 
@@ -53,6 +54,7 @@ public class WikiParser extends Parser {
      * @return giving back the updated object.
      */
     private WikiArticle parseInfoOfWikiArticle(String wikiResponse, WikiArticle objectToAnalyse) {
+        log.finer("[" + objectToAnalyse.getTitle() + "] Response from Wikipedia Source to Info Request:" + wikiResponse);
         JSONObject obj = null;
         try {
             //reduce the object to the needed node.
@@ -66,7 +68,7 @@ public class WikiParser extends Parser {
             objectToAnalyse.setLanguage(Language.EN); //TODO: Do correct language conversion
         } catch (JSONException e) {
             // There was a wrong answer and/ or the api changed
-            e.printStackTrace();
+            log.severe("[" + objectToAnalyse.getTitle() + "] Could not parse the response: " + wikiResponse);
         }
         return objectToAnalyse;
     }
@@ -81,6 +83,7 @@ public class WikiParser extends Parser {
      * @return giving back the updated object.
      */
     private WikiArticle parseLinksOfWikiArticle(String wikiResponse, WikiArticle objectToAnalyse) {
+        log.finer("[" + objectToAnalyse.getTitle() + "] Response from Wikipedia Source to Links Request:" + wikiResponse);
         JSONObject obj = null;
         JSONArray arr = null;
         String req = "";
@@ -105,6 +108,8 @@ public class WikiParser extends Parser {
             }
             //seems like continue was set and we are going to continue with this, cause there are more linked things..
             if (req.length() > 0) {
+                log.finest("[" + objectToAnalyse.getTitle() + "] needs some more Information from wiki and requests it." +
+                        "Information belonging to section Links");
                 //query with the new startpoint (plcontinue)
                 String linkQuery = "?continue=&action=query&format=json&prop=links&pllimit=max&plcontinue="
                         + req + "&titles=" + objectToAnalyse.getTitle();
@@ -112,13 +117,13 @@ public class WikiParser extends Parser {
                 objectToAnalyse = parseLinksOfWikiArticle(provider.requestResource(linkQuery), objectToAnalyse);
             }
 
-            return objectToAnalyse;
+
 
         } catch (JSONException e) {
             // There was a wrong answer and/ or the api changed
-            return objectToAnalyse;
+            log.severe("[" + objectToAnalyse.getTitle() + "] Could not parse the response: " + wikiResponse);
         }
-
+        return objectToAnalyse;
 
     }
 
@@ -132,6 +137,8 @@ public class WikiParser extends Parser {
      * @return giving back the updated object.
      */
     private WikiArticle parseCategoriesOfWikiArticle(String wikiResponse, WikiArticle objectToAnalyse) {
+        log.finer("[" + objectToAnalyse.getTitle() + "] Response from Wikipedia Source to Category Request:"
+                + wikiResponse);
         JSONObject obj = null;
         JSONArray arr = null;
         String req = "";
@@ -156,17 +163,19 @@ public class WikiParser extends Parser {
             }
             //seems like continue was set and we are going to continue with this, cause there are more linked things..
             if (req.length() > 0) {
+                log.finest("[" + objectToAnalyse.getTitle() + "] needs some more Information from wiki and requests it." +
+                        "Information belonging to section Categories");
                 String categoriesQuery = "?continue=&action=query&format=json&prop=categories&cllimit=max&clcontinue="
                         + req + "&titles=" + objectToAnalyse.getTitle();
                 //recursiv!
                 objectToAnalyse = parseLinksOfWikiArticle(provider.requestResource(categoriesQuery), objectToAnalyse);
             }
-            return objectToAnalyse;
+
 
         } catch (JSONException e) {
-            return objectToAnalyse;
+            log.severe("[" + objectToAnalyse.getTitle() + "] Could not parse the response: " + wikiResponse);
         }
-
+        return objectToAnalyse;
 
     }
 }
