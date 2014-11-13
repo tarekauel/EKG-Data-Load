@@ -4,5 +4,6 @@ EKG-Data-Load
 - [ ] Tests
 - [ ] Klassendiagramm anpassen
 - [ ] Loop Back implementieren
-- [X] Kommentare
+- [ ] Core komplett auf Datenbank ändern mittels tryingToParse Flag
 - [ ] Logging
+- [X] Kommentare
