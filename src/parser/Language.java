@@ -6,6 +6,4 @@ package parser;
 public enum Language {
     EN,
     DE
-
-
 }

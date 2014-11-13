@@ -2,11 +2,14 @@ package infoobject;
 
 import parser.Parser;
 
+import java.util.logging.Logger;
+
 /**
  * An InfoObject is supposed to store all relevant data from a Resource
  */
 public abstract class InfoObject {
     private final Parser ASSOCIATED_PARSER;
+    Logger log = Logger.getGlobal();
 
     /**
      * Constructor
@@ -34,6 +37,7 @@ public abstract class InfoObject {
 
     @Override
     public String toString() {
-        return "InfoObject with AssociatedParser " + ASSOCIATED_PARSER;
+        return this.getClass().getSimpleName() +
+                " with AssociatedParser " + ASSOCIATED_PARSER;
     }
 }

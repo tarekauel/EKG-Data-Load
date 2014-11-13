@@ -18,6 +18,7 @@ public class HttpProvider extends InfoProvider {
      */
     public HttpProvider(String baseUri) {
         super(baseUri);
+        log.finer("Created HttpProvider with base URI [" + baseUri + "]");
     }
 
     /**
@@ -30,7 +31,9 @@ public class HttpProvider extends InfoProvider {
      */
     @Override
     public String requestResource(String query) {
+        log.fine("Query: " + query);
         String sQuery = query.replace(" ", "%20");
+        log.fine("Escaped Query: " + query);
         try {
 
             HttpURLConnection conn = (HttpURLConnection) new URL(baseUri + sQuery).openConnection();
@@ -42,13 +45,15 @@ public class HttpProvider extends InfoProvider {
             if (conn.getResponseCode() > 299) {
                 //Missed anything on the connection and received an unexpected http response.
                 //Quit processing
-                throw new IOException("Did not receive an valid answer");
+                log.severe("Did not receive an valid answer. Status Code [" + conn.getResponseCode() + "]");
+                return "";
             }
 
             //Get the charset
             for (String param : contentType.replace(" ", "").split(";")) {
                 if (param.startsWith("charset=")) {
                     charset = param.split("=", 2)[1];
+                    log.finest("Charset: " + charset);
                     break;
                 }
             }
@@ -56,7 +61,7 @@ public class HttpProvider extends InfoProvider {
             if (charset == null) {
                 //Missed anything on the connection and received an unexpected http response.
                 //Problem is the encoding, therefor quit processing
-
+                log.severe("No charset. Returning nothing to caller!");
                 return "";
             } else {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), charset));
@@ -65,11 +70,17 @@ public class HttpProvider extends InfoProvider {
                 for (String line; (line = reader.readLine()) != null; ) {
                     sb.append(line);
                 }
+                log.fine("Answer from server:" + sb.toString());
                 return sb.toString();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.severe("Error on processing in " + this.toString());
             return "";
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " Type " + this.getClass().getSimpleName();
     }
 }

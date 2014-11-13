@@ -1,10 +1,13 @@
 package infoprovider;
 
+import java.util.logging.Logger;
+
 /**
  * An InfoProvider can give access to any kind of resource
  */
 public abstract class InfoProvider {
     String baseUri = "";
+    Logger log = Logger.getGlobal();
 
     /**
      * will take an baseUri which can be used as root directory in case of files or as api link in case of web provider.
@@ -25,6 +28,6 @@ public abstract class InfoProvider {
 
     @Override
     public String toString() {
-        return baseUri;
+        return this.getClass().getSimpleName() + " [" + baseUri + "]";
     }
 }
