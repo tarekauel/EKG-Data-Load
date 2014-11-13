@@ -1,5 +1,6 @@
 package infoobject;
 
+import core.Core;
 import parser.Language;
 import parser.Parser;
 
@@ -96,6 +97,9 @@ public class WikiArticle extends InfoObject {
             return false;
         }
         this.linkedArticles.add(linkedArticle);
+        // add it to the scheduling!
+        Core.getCore().addWikiArticleToScheduleList(linkedArticle);
+
         return true;
     }
 

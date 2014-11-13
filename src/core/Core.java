@@ -1,6 +1,7 @@
 package core;
 
 import infoobject.InfoObject;
+import infoobject.WikiArticle;
 
 import java.util.ArrayList;
 
@@ -49,12 +50,16 @@ public class Core {
      *
      * @param object which should be analysed in the future
      */
-    public synchronized void addInfoObjectToScheduleList(InfoObject object) {
+    public synchronized void addWikiArticleToScheduleList(WikiArticle object) {
+        System.out.println("+1");
+        Database.getDatabase().insertArticleIntoDatabase(object);
+
         //check that it doesn't already exists.
-        if (listOfScheduledInfoObjects.contains(object)) {
-            return;
-        }
-        listOfScheduledInfoObjects.add(object);
+
+        //if (listOfScheduledInfoObjects.contains(object)) {
+        //    return;
+        //}
+        //listOfScheduledInfoObjects.add(object);
     }
 
     /**
@@ -63,10 +68,13 @@ public class Core {
      * @return the InfoObject which should be analysed. If the list is empty, returns null
      */
     public synchronized InfoObject getNextInfoObject() {
-        if (listOfScheduledInfoObjects.size() < 1) {
-            return null;
-        }
-        return listOfScheduledInfoObjects.remove(0);
+
+        return Database.getDatabase().getNextArticle();
+
+        //if (listOfScheduledInfoObjects.size() < 1) {
+        //    return null;
+        //}
+        //return listOfScheduledInfoObjects.remove(0);
     }
 
     /**
