@@ -54,10 +54,11 @@ public class Core {
      */
     public synchronized void addWikiArticleToScheduleList(WikiArticle object) {
         log.fine("Adding WikiArticle [" + object.getTitle() + "] to the Scheduler");
-        //Database.getDatabase().insertArticleIntoDatabase(object);
+
         if (listOfScheduledInfoObjects.contains(object)) {
             return;
         }
+        Observer.getObserver().setPlannedWikiArticles(listOfScheduledInfoObjects.size() + 1);
         listOfScheduledInfoObjects.add(object);
     }
 
@@ -68,7 +69,7 @@ public class Core {
      */
     public synchronized InfoObject getNextInfoObject() {
         log.fine("Get next InfoObject");
-        //return Database.getDatabase().getNextArticle();
+
         if (listOfScheduledInfoObjects.size() > 0) {
             return listOfScheduledInfoObjects.remove(0);
         }
@@ -83,9 +84,9 @@ public class Core {
      */
     public synchronized void addInfoObjectToFinished(InfoObject object) {
         log.fine("Finished analyzing of InfoObject [" + object.toString() + "]");
+        Observer.getObserver().incrementFinishedInfoObject();
         listOfFinishedInfoObjects.add(object);
-        if (listOfFinishedInfoObjects.size() % 10 == 0) {
-            System.out.println("Finished:" + listOfFinishedInfoObjects.size() + "\n Scheduled:" + listOfScheduledInfoObjects.size());
-        }
     }
+
+
 }
