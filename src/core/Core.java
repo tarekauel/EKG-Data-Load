@@ -1,8 +1,10 @@
 package core;
 
 import infoobject.InfoObject;
+import infoobject.WikiArticle;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * Created by Lars on 11.11.2014.
@@ -14,7 +16,7 @@ public class Core {
     private ArrayList<InfoObject> listOfFinishedInfoObjects = new ArrayList<InfoObject>();
     private ArrayList<InfoObject> listOfScheduledInfoObjects = new ArrayList<InfoObject>();
     private ArrayList<Worker> listOfWorker = new ArrayList<Worker>();
-
+    private Logger log = Logger.getGlobal();
     /**
      * Creates an singletonInstance of the core
      * it will initialize a workerpool with 10 threads
@@ -26,6 +28,7 @@ public class Core {
             //manage them in a list in case we need to stop them
             listOfWorker.add(new Worker(i));
         }
+        log.info("Created core component with [" + countWorker + "] Threads for working.");
     }
 
     /**
@@ -49,8 +52,9 @@ public class Core {
      *
      * @param object which should be analysed in the future
      */
-    public synchronized void addInfoObjectToScheduleList(InfoObject object) {
-        //check that it doesn't already exists.
+    public synchronized void addWikiArticleToScheduleList(WikiArticle object) {
+        log.fine("Adding WikiArticle [" + object.getTitle() + "] to the Scheduler");
+        //Database.getDatabase().insertArticleIntoDatabase(object);
         if (listOfScheduledInfoObjects.contains(object)) {
             return;
         }
@@ -63,10 +67,13 @@ public class Core {
      * @return the InfoObject which should be analysed. If the list is empty, returns null
      */
     public synchronized InfoObject getNextInfoObject() {
-        if (listOfScheduledInfoObjects.size() < 1) {
-            return null;
+        log.fine("Get next InfoObject");
+        //return Database.getDatabase().getNextArticle();
+        if (listOfScheduledInfoObjects.size() > 0) {
+            return listOfScheduledInfoObjects.remove(0);
         }
-        return listOfScheduledInfoObjects.remove(0);
+        return null;
+
     }
 
     /**
@@ -75,6 +82,10 @@ public class Core {
      * @param object which is analysed.
      */
     public synchronized void addInfoObjectToFinished(InfoObject object) {
+        log.fine("Finished analyzing of InfoObject [" + object.toString() + "]");
         listOfFinishedInfoObjects.add(object);
+        if (listOfFinishedInfoObjects.size() % 10 == 0) {
+            System.out.println("Finished:" + listOfFinishedInfoObjects.size() + "\n Scheduled:" + listOfScheduledInfoObjects.size());
+        }
     }
 }

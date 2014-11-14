@@ -1,5 +1,6 @@
 package infoobject;
 
+import core.Core;
 import parser.Language;
 import parser.Parser;
 
@@ -26,6 +27,7 @@ public class WikiArticle extends InfoObject {
     public WikiArticle(String title) {
         //Assign the correct parser
         super(Parser.WIKI_PARSER);
+        log.finer("Title:" + title);
         this.title = title;
     }
 
@@ -37,9 +39,11 @@ public class WikiArticle extends InfoObject {
      */
     public boolean setPageId(long pageId) {
         if (this.pageId == 0 && pageId > 0) {
+            log.finer("[" + this.getTitle() + "] Page Id:" + pageId);
             this.pageId = pageId;
             return true;
         }
+        log.severe("[" + this.getTitle() + "] tried to set property with value [" + pageId + "] but failed.");
         return false;
     }
 
@@ -52,8 +56,10 @@ public class WikiArticle extends InfoObject {
     public boolean setRevisionId(long revisionId) {
         if (this.revisionId == 0 && revisionId > 0) {
             this.revisionId = revisionId;
+            log.finer("[" + this.getTitle() + "] Last Revision Id:" + revisionId);
             return true;
         }
+        log.severe("[" + this.getTitle() + "] tried to set property with value [" + revisionId + "] but failed.");
         return false;
     }
 
@@ -66,8 +72,10 @@ public class WikiArticle extends InfoObject {
     public boolean setLanguage(Language language) {
         if (this.language == null && language != null) {
             this.language = language;
+            log.finer("[" + this.getTitle() + "] language:" + language);
             return true;
         }
+        log.severe("[" + this.getTitle() + "] tried to set property with value [" + language + "] but failed.");
         return false;
     }
 
@@ -80,8 +88,10 @@ public class WikiArticle extends InfoObject {
     public boolean setUrl(String url) {
         if (this.url.equals("") && !url.equals("")) {
             this.url = url;
+            log.finer("[" + this.getTitle() + "] URL:" + url);
             return true;
         }
+        log.severe("[" + this.getTitle() + "] tried to set property with value [" + url + "] but failed.");
         return false;
     }
 
@@ -93,9 +103,14 @@ public class WikiArticle extends InfoObject {
      */
     public boolean addLinkedArticles(WikiArticle linkedArticle) {
         if (this.linkedArticles.contains(linkedArticle)) {
+            log.severe("[" + this.getTitle() + "] tried to set property with value [" + linkedArticle + "] but failed.");
             return false;
         }
+        log.finer("[" + this.getTitle() + "] added linked article:" + linkedArticle.getTitle());
         this.linkedArticles.add(linkedArticle);
+        // add it to the scheduling!
+        Core.getCore().addWikiArticleToScheduleList(linkedArticle);
+
         return true;
     }
 
@@ -108,9 +123,11 @@ public class WikiArticle extends InfoObject {
     public boolean addLinkedCategories(String linkedCategory) {
         for (String s : linkedCategories) {
             if (s.equals(linkedCategory)) {
+                log.severe("[" + this.getTitle() + "] tried to set property with value [" + linkedCategory + "] but failed.");
                 return false;
             }
         }
+        log.finer("[" + this.getTitle() + "] added linked category");
         this.linkedCategories.add(linkedCategory);
         return true;
     }
@@ -180,7 +197,7 @@ public class WikiArticle extends InfoObject {
 
     @Override
     public String toString() {
-        return title;
+        return super.toString() + "." + this.getClass().getSimpleName() + "[" + this.getTitle() + "]";
     }
 
     @Override
