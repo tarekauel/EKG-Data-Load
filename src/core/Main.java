@@ -16,7 +16,7 @@ public class Main {
      * @param args no args used!
      */
     public static void main(String args[]) {
-        log.setLevel(Level.ALL);
+        log.setLevel(Level.SEVERE);
         //adds an start InfoObject to the Core. This article will fill up the working queue.
         log.info("Logging Level is set to [" + log.getLevel() + "].");
         Core.getCore().addWikiArticleToScheduleList(new WikiArticle("Computer network"));
